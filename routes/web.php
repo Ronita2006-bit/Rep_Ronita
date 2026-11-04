@@ -20,3 +20,5 @@ Route::get('/home', [HomeController::class, 'index']);
 Route::post('question/store', [QuestionController::class, 'store'])
 		->name('question.store');
 
+Route::delete('/pelanggan/{pelanggan}', [PelangganController::class, 'destroy'])
+    ->name('pelanggan.destroy');
