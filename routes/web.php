@@ -9,8 +9,8 @@ use App\Http\Controllers\UserController;
 
 Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-
 Route::resource('pelanggan', PelangganController::class);
+Route::resource('user', UserController::class);
 
 Route::get('/', function () {
     return view('welcome');
@@ -19,7 +19,7 @@ Route::get('/', function () {
 Route::get('/home', [HomeController::class, 'index']);
 
 Route::post('question/store', [QuestionController::class, 'store'])
-		->name('question.store');
+    ->name('question.store');
 
 Route::delete('/pelanggan/{pelanggan}', [PelangganController::class, 'destroy'])
     ->name('pelanggan.destroy');
