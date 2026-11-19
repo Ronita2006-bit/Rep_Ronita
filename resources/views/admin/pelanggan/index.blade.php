@@ -26,8 +26,8 @@
             <div>
                 <a href="{{ route('pelanggan.create') }}"
                     class="btn btn-success text-white d-inline-flex align-items-center">
-                    <svg class="icon icon-xs me-1" fill="none" stroke="currentColor" stroke-width="2"
-                        viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <svg class="icon icon-xs me-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                     </svg>
                     Tambah Pelanggan
@@ -49,10 +49,49 @@
             <div class="card border-0 shadow mb-4">
                 <div class="card-body">
                     <div class="table-responsive">
+                        {{-- Form filter gender + search (satu form) --}}
+                        <form method="GET" action="{{ route('pelanggan.index') }}">
+                            <div class="row mb-3">
+                                <div class="col-md-2">
+                                    <select name="gender" class="form-select" onchange="this.form.submit()">
+                                        <option value="">All</option>
+                                        <option value="Male" {{ request('gender') == 'Male' ? 'selected' : '' }}>Male</option>
+                                        <option value="Female" {{ request('gender') == 'Female' ? 'selected' : '' }}>Female
+                                        </option>
+                                        <option value="Other" {{ request('gender') == 'Other' ? 'selected' : '' }}>Other
+                                        </option>
+                                    </select>
+                                </div>
+
+                                {{-- Search + Clear Search --}}
+                                <div class="col-md-3">
+                                    <div class="input-group">
+                                        <input type="text" name="search" class="form-control" placeholder="Search"
+                                            value="{{ request('search') }}">
+                                        <button type="submit" class="input-group-text">
+                                            <svg class="icon icon-xxs" fill="none" stroke="currentColor"
+                                                viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"
+                                                aria-hidden="true">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                            </svg>
+                                        </button>
+                                        @if (request('search'))
+                                            <a href="{{ request()->fullUrlWithQuery(['search' => null, 'page' => null]) }}"
+                                                class="btn btn-outline-danger">
+                                                Clear
+                                            </a>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+
                         <table id="table-pelanggan" class="table table-centered table-nowrap mb-0 rounded">
                             <thead class="thead-light">
                                 <tr>
-                                    <th class="border-0 rounded-start">First Name</th>
+                                    <th class="border-0 rounded-start">#</th>
+                                    <th class="border-0">First Name</th>
                                     <th class="border-0">Last Name</th>
                                     <th class="border-0">Birthday</th>
                                     <th class="border-0">Gender</th>
@@ -64,6 +103,9 @@
                             <tbody>
                                 @forelse ($dataPelanggan as $item)
                                     <tr>
+                                        {{-- Nomor urut berlanjut antar halaman --}}
+                                        <td>{{ ($dataPelanggan->currentPage() - 1) * $dataPelanggan->perPage() + $loop->iteration }}
+                                        </td>
                                         <td>{{ $item->first_name }}</td>
                                         <td>{{ $item->last_name }}</td>
                                         <td>{{ $item->birthday }}</td>
@@ -73,9 +115,9 @@
                                         <td>
                                             <a href="{{ route('pelanggan.edit', $item->pelanggan_id) }}"
                                                 class="btn btn-info btn-sm d-inline-flex align-items-center">
-                                                <svg class="icon icon-xs me-2" data-slot="icon" fill="none"
-                                                    stroke-width="1.5" stroke="currentColor" viewBox="0 0 24 24"
-                                                    xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                                <svg class="icon icon-xs me-2" data-slot="icon" fill="none" stroke-width="1.5"
+                                                    stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"
+                                                    aria-hidden="true">
                                                     <path stroke-linecap="round" stroke-linejoin="round"
                                                         d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
                                                 </svg>
@@ -83,16 +125,16 @@
                                             </a>
 
                                             {{-- Tombol Hapus --}}
-                                            <form action="{{ route('pelanggan.destroy', $item->pelanggan_id) }}"
-                                                method="POST" style="display: inline;"
+                                            <form action="{{ route('pelanggan.destroy', $item->pelanggan_id) }}" method="POST"
+                                                style="display: inline;"
                                                 onsubmit="return confirm('Yakin ingin menghapus data pelanggan ini?')">
                                                 @csrf
                                                 @method('DELETE')
 
                                                 <button type="submit"
                                                     class="btn btn-danger btn-sm d-inline-flex align-items-center">
-                                                    <svg class="icon icon-xs me-2" fill="none"
-                                                        stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"
+                                                    <svg class="icon icon-xs me-2" fill="none" stroke="currentColor"
+                                                        stroke-width="1.5" viewBox="0 0 24 24"
                                                         xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                                                         <path stroke-linecap="round" stroke-linejoin="round"
                                                             d="M6 7h12M9 7V4h6v3m-8 0 1 13h8l1-13M10 11v5m4-5v5" />
@@ -104,13 +146,18 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="7" class="text-center text-gray-500 py-4">
+                                        <td colspan="8" class="text-center text-gray-500 py-4">
                                             Belum ada data pelanggan.
                                         </td>
                                     </tr>
                                 @endforelse
                             </tbody>
                         </table>
+
+                        {{-- Pagination (satu saja) --}}
+                        <div class="mt-3">
+                            {{ $dataPelanggan->links('pagination::bootstrap-5') }}
+                        </div>
                     </div>
                 </div>
             </div>
